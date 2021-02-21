@@ -130,7 +130,7 @@ return [
 
         'softDelete' => true,
 
-        'save_schema_file' => true,
+        'save_schema_file' => false,
 
         'localized' => false,
 
@@ -138,7 +138,7 @@ return [
 
         'repository_pattern' => true,
 
-        'resources' => false,
+        'resources' => true,
 
         'excluded_fields' => ['id'], // Array of columns that doesn't required while creating module
     ],
@@ -170,7 +170,7 @@ return [
 
     'add_on' => [
 
-        'swagger'       => false,
+        'swagger'       => true,
 
         'tests'         => true,
 
@@ -178,7 +178,7 @@ return [
 
         'menu'          => [
 
-            'enabled'       => true,
+            'enabled'       => false,
 
             'menu_file'     => 'layouts/menu.blade.php',
         ],
