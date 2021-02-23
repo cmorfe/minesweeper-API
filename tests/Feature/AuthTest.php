@@ -7,11 +7,15 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\ApiTestTrait;
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
 
 class AuthTest extends TestCase
 {
     use ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
 
+    /**
+     * Register
+     */
     public function testRequiredFieldsForRegistration()
     {
         $this->json('POST', 'api/v1/register', ['Accept' => 'application/json'])
@@ -80,5 +84,79 @@ class AuthTest extends TestCase
                     "username" => ["The username has already been taken."]
                 ]
             ]);
+    }
+
+    /**
+     * Login
+     */
+    public function testMustEnterEmailAndPassword()
+    {
+        $this->json('POST', 'api/v1/login')
+            ->assertStatus(422)
+            ->assertJson([
+                "message" => "The given data was invalid.",
+                "errors" => [
+                    'username' => ["The username field is required."],
+                    'password' => ["The password field is required."],
+                ]
+            ]);
+    }
+
+    public function testSuccessfulLogin()
+    {
+        $credentials = [
+            "username" => "cmorfe",
+            "password" => "123456"
+        ];
+
+        User::factory()->create([
+            "username" => $credentials['username'],
+            'password' => bcrypt($credentials['password']),
+        ]);
+
+        $this->json('POST', 'api/v1/login', $credentials, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJson([
+                "message" => "Login successful.",
+            ])
+            ->assertJsonStructure([
+                "data" => [
+                    'access_token'
+                ]
+            ]);
+
+        $this->assertAuthenticated();
+    }
+
+    public function testFailedLogin()
+    {
+        $credentials = [
+            "username" => "cmorfe",
+            "password" => "123456"
+        ];
+
+        $this->json('POST', 'api/v1/login', $credentials, ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJson([
+                "message" => trans('auth.failed'),
+            ]);
+    }
+
+    /**
+     * Logout
+     */
+    public function testSuccessfulLogout()
+    {
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
+        );
+
+        $this->json('POST', 'api/v1/logout', ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJson([
+                "message" => "Logout successful.",
+            ]);
+
     }
 }
