@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "72dfc786317ec49a7d06fa1cb8c60a46",
+    "content-hash": "4106686b9f6a43fa8ad650b1b657e200",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -5985,16 +5985,16 @@
         },
         {
             "name": "doctrine/annotations",
-            "version": "1.12.0",
+            "version": "1.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "ebec9b1708c95d7602245c8172773f6b4e0c3be1"
+                "reference": "b17c5014ef81d212ac539f07a1001832df1b6d3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/ebec9b1708c95d7602245c8172773f6b4e0c3be1",
-                "reference": "ebec9b1708c95d7602245c8172773f6b4e0c3be1",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/b17c5014ef81d212ac539f07a1001832df1b6d3b",
+                "reference": "b17c5014ef81d212ac539f07a1001832df1b6d3b",
                 "shasum": ""
             },
             "require": {
@@ -6047,7 +6047,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2021-02-14T13:22:18+00:00"
+            "time": "2021-02-21T21:00:45+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -8576,7 +8576,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3|^8.0"
+        "php": "^7.3|^8.0",
+        "ext-pdo": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "1.1.0"
