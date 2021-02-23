@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use InfyOm\Generator\Utils\ResponseUtil;
+use Illuminate\Http\JsonResponse;
 use Response;
 
 /**
@@ -18,12 +18,30 @@ use Response;
  */
 class AppBaseController extends Controller
 {
-    public function sendResponse($result, $message, $code = 200)
+    /**
+     * @param $result
+     * @param $message
+     * @param  int  $code
+     * @return JsonResponse
+     */
+    public function sendResponse($result, $message, $code = 200): JsonResponse
     {
-        return Response::json(ResponseUtil::makeResponse($message, $result), $code);
+        $response = [
+            'success' => true,
+            'data' => $result,
+            'message' => $message,
+        ];
+
+        return Response::json($response, $code);
     }
 
-    public function sendError($message, $code = 404, $errors = [])
+    /**
+     * @param $message
+     * @param  int  $code
+     * @param  array  $errors
+     * @return JsonResponse
+     */
+    public function sendError($message, $code = 404, $errors = []): JsonResponse
     {
         $response = [
             'success' => false,
@@ -37,11 +55,15 @@ class AppBaseController extends Controller
         return Response::json($response, $code);
     }
 
-    public function sendSuccess($message)
+    /**
+     * @param $message
+     * @return JsonResponse
+     */
+    public function sendSuccess($message): JsonResponse
     {
         return Response::json([
             'success' => true,
             'message' => $message
-        ], 200);
+        ]);
     }
 }

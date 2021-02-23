@@ -118,6 +118,6 @@ class AuthController extends AppBaseController
 
         $user->tokens()->delete();
 
-        return $this->sendResponse('', 'Logout successful.');
+        return $this->sendSuccess('Logout successful.');
     }
 }
