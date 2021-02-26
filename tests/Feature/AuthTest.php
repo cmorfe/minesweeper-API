@@ -5,9 +5,9 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Laravel\Sanctum\Sanctum;
 use Tests\ApiTestTrait;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 
 class AuthTest extends TestCase
 {
@@ -157,6 +157,5 @@ class AuthTest extends TestCase
             ->assertJson([
                 "message" => "Logout successful.",
             ]);
-
     }
 }

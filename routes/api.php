@@ -24,3 +24,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('register', [App\Http\Controllers\AuthController::class, 'register']);
 Route::post('login', [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout']);
+
+
+Route::resource('boards', App\Http\Controllers\API\BoardAPIController::class);
+
+Route::resource('squares', App\Http\Controllers\API\SquareAPIController::class);
