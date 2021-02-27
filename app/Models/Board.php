@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Rules\MaxMinesRule;
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Query\Builder;
 
 /**
  * @SWG\Definition(
@@ -106,33 +106,50 @@ class Board extends Model
     /**
      * Validation rules
      *
-     * @param  int  $width
-     * @param  int  $height
-     * @return array
+     * @var array
      */
-    public static function rules(int $width, int $height): array
-    {
-        return [
-            'width' => 'required|integer|min:2|max:20',
-            'height' => 'required|integer|min:2|max:20',
-            'mines' => [
-                'required', 'integer', 'min:1', new MaxMinesRule($width, $height)
-            ]
-        ];
-    }
+    public static $rules = [
+        'width' => 'required|integer|min:2|max:20',
+        'height' => 'required|integer|min:2|max:20'
+    ];
 
     public static function boot()
     {
         parent::boot();
 
-        // On creating
-        self::created(function () {
-            $this->createSquares();
+        self::created(function (Board $board) {
+            $board->createSquares();
+
+            $board->refresh();
         });
     }
 
-    private function createSquares() {
+    private function createSquares()
+    {
+        $squares = new Collection;
 
+        $mined = false;
+
+        for ($x = 0; $x < $this->width; $x++) {
+            for ($y = 0; $y < $this->height; $y++) {
+                $squares->add(compact('x', 'y', 'mined'));
+            }
+        }
+
+        $squares = $squares->shuffle();
+
+        $i = 1;
+        foreach ($squares as $key => $value) {
+            $value['mined'] = true;
+
+            $squares[$key] = $value;
+
+            if ($i++ >= $this->mines) {
+                break;
+            }
+        }
+
+        $this->squares()->createMany($squares);
     }
 
     /**
@@ -146,6 +163,11 @@ class Board extends Model
     public static function scopeWithGameStateOn(Builder $query)
     {
         return $query->where('game_state', '=', self::GAME_STATE_ON);
+    }
+
+    public function squares()
+    {
+        return $this->hasMany(Square::class);
     }
 
 }

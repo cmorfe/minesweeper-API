@@ -8,6 +8,8 @@ use App\Http\Requests\API\UpdateBoardAPIRequest;
 use App\Http\Resources\BoardResource;
 use App\Models\Board;
 use App\Repositories\BoardRepository;
+use App\Rules\MaxMinesRule;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Response;
@@ -24,6 +26,8 @@ class BoardAPIController extends AppBaseController
 
     public function __construct(BoardRepository $boardRepo)
     {
+        $this->middleware('auth:sanctum');
+
         $this->boardRepository = $boardRepo;
     }
 
@@ -72,7 +76,7 @@ class BoardAPIController extends AppBaseController
 
     /**
      * @param  CreateBoardAPIRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      *
      * @SWG\Post(
      *      path="/boards",
@@ -108,7 +112,7 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateBoardAPIRequest $request)
+    public function store(Request $request): JsonResponse
     {
         $input = $request->all();
 
@@ -294,9 +298,12 @@ class BoardAPIController extends AppBaseController
      */
     private function validateCreate(array $input): array
     {
-        return Validator::make(
-            $input,
-            Board::rules($input['width'], $input['height'])
-        )->validate();
+        Validator::make($input, Board::$rules)->validate();
+
+        return Validator::make($input, [
+            'mines' => [
+                'required', 'integer', 'min:1', new MaxMinesRule($input['width'], $input['height'])
+            ]
+        ])->validate();
     }
 }
