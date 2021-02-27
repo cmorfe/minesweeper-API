@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Board;
 use App\Models\User;
-use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -32,7 +31,7 @@ class BoardRepository extends BaseRepository
      *
      * @return array
      */
-    public function getFieldsSearchable()
+    public function getFieldsSearchable(): array
     {
         return $this->fieldSearchable;
     }
@@ -40,7 +39,7 @@ class BoardRepository extends BaseRepository
     /**
      * Configure the Model
      **/
-    public function model()
+    public function model(): string
     {
         return Board::class;
     }

@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * @SWG\Definition(
@@ -72,13 +73,14 @@ class Board extends Model
 
     use HasFactory;
 
-    const GAME_STATE_ON = 'ON';
-
     protected $table = 'boards';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    const GAME_STATE_ON = 'ON';
+    const GAME_STATE_WON = 'WON';
+    const GAME_STATE_LOST = 'LOST';
 
     public $fillable = [
         'width',
@@ -110,7 +112,8 @@ class Board extends Model
      */
     public static $rules = [
         'width' => 'required|integer|min:2|max:20',
-        'height' => 'required|integer|min:2|max:20'
+        'height' => 'required|integer|min:2|max:20',
+        'mines' => 'required|integer|min:1|max:400'
     ];
 
     public static function boot()
@@ -160,12 +163,12 @@ class Board extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function scopeWithGameStateOn(Builder $query)
+    public static function scopeWithGameStateOn(Builder $query): Builder
     {
         return $query->where('game_state', '=', self::GAME_STATE_ON);
     }
 
-    public function squares()
+    public function squares(): HasMany
     {
         return $this->hasMany(Square::class);
     }

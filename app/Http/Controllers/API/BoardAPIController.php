@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AppBaseController;
-use App\Http\Requests\API\CreateBoardAPIRequest;
 use App\Http\Requests\API\UpdateBoardAPIRequest;
 use App\Http\Resources\BoardResource;
 use App\Models\Board;
 use App\Repositories\BoardRepository;
-use App\Rules\MaxMinesRule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Response;
 use Validator;
 
 /**
@@ -32,7 +29,6 @@ class BoardAPIController extends AppBaseController
     }
 
     /**
-     * @param  Request  $request
      * @return JsonResponse
      *
      * @SWG\Get(
@@ -175,7 +171,7 @@ class BoardAPIController extends AppBaseController
     /**
      * @param  int  $id
      * @param  UpdateBoardAPIRequest  $request
-     * @return Response
+     * @return JsonResponse
      *
      * @SWG\Put(
      *      path="/boards/{id}",
@@ -218,7 +214,7 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateBoardAPIRequest $request)
+    public function update($id, UpdateBoardAPIRequest $request): JsonResponse
     {
         $input = $request->all();
 
@@ -235,58 +231,6 @@ class BoardAPIController extends AppBaseController
     }
 
     /**
-     * @param  int  $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/boards/{id}",
-     *      summary="Remove the specified Board from storage",
-     *      tags={"Board"},
-     *      description="Delete Board",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of Board",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
-    public function destroy($id)
-    {
-        /** @var Board $board */
-        $board = $this->boardRepository->find($id);
-
-        if (empty($board)) {
-            return $this->sendError('Board not found');
-        }
-
-        $board->delete();
-
-        return $this->sendSuccess('Board deleted successfully');
-    }
-
-    /**
      * @param  array  $input
      * @return array
      * @throws ValidationException
@@ -294,12 +238,13 @@ class BoardAPIController extends AppBaseController
      */
     private function validateCreate(array $input): array
     {
-        Validator::make($input, Board::$rules)->validate();
+        return Validator::make($input, Board::$rules)
+            ->after(function ($validator) use ($input) {
+                $maxMines = $input['width'] * $input['height'];
 
-        return Validator::make($input, [
-            'mines' => [
-                'required', 'integer', 'min:1', new MaxMinesRule($input['width'], $input['height'])
-            ]
-        ])->validate();
+                if ($input['mines'] > $maxMines) {
+                    $validator->errors()->add('mines', "The number of mines must be less than or equal {$maxMines}.");
+                }
+            })->validate();
     }
 }
