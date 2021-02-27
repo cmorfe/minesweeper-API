@@ -16,14 +16,13 @@ class BoardResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
             'width' => $this->width,
             'height' => $this->height,
             'mines' => $this->mines,
             'time' => $this->time,
             'game_state' => $this->game_state,
+            'squares' => SquareResource::collection($this->whenLoaded('squares')),
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
         ];
     }
 }

@@ -8,6 +8,8 @@ use App\Http\Requests\API\UpdateBoardAPIRequest;
 use App\Http\Resources\BoardResource;
 use App\Models\Board;
 use App\Repositories\BoardRepository;
+use App\Rules\MaxMinesRule;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Response;
@@ -24,12 +26,14 @@ class BoardAPIController extends AppBaseController
 
     public function __construct(BoardRepository $boardRepo)
     {
+        $this->middleware('auth:sanctum');
+
         $this->boardRepository = $boardRepo;
     }
 
     /**
      * @param  Request  $request
-     * @return Response
+     * @return JsonResponse
      *
      * @SWG\Get(
      *      path="/boards",
@@ -59,20 +63,16 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function index(Request $request)
+    public function index(): JsonResponse
     {
-        $boards = $this->boardRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+        $boards = $this->boardRepository->all();
 
         return $this->sendResponse(BoardResource::collection($boards), 'Boards retrieved successfully');
     }
 
     /**
-     * @param  CreateBoardAPIRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      *
      * @SWG\Post(
      *      path="/boards",
@@ -108,7 +108,7 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateBoardAPIRequest $request)
+    public function store(Request $request): JsonResponse
     {
         $input = $request->all();
 
@@ -119,12 +119,12 @@ class BoardAPIController extends AppBaseController
         }
         $board = $this->boardRepository->create($input);
 
-        return $this->sendResponse(new BoardResource($board), 'Board saved successfully');
+        return $this->sendResponse(new BoardResource($board->load('squares')), 'Board saved successfully');
     }
 
     /**
      * @param  int  $id
-     * @return Response
+     * @return JsonResponse
      *
      * @SWG\Get(
      *      path="/boards/{id}",
@@ -160,7 +160,7 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         /** @var Board $board */
         $board = $this->boardRepository->find($id);
@@ -169,7 +169,7 @@ class BoardAPIController extends AppBaseController
             return $this->sendError('Board not found');
         }
 
-        return $this->sendResponse(new BoardResource($board), 'Board retrieved successfully');
+        return $this->sendResponse(new BoardResource($board->load('squares')), 'Board retrieved successfully');
     }
 
     /**
@@ -294,9 +294,12 @@ class BoardAPIController extends AppBaseController
      */
     private function validateCreate(array $input): array
     {
-        return Validator::make(
-            $input,
-            Board::rules($input['width'], $input['height'])
-        )->validate();
+        Validator::make($input, Board::$rules)->validate();
+
+        return Validator::make($input, [
+            'mines' => [
+                'required', 'integer', 'min:1', new MaxMinesRule($input['width'], $input['height'])
+            ]
+        ])->validate();
     }
 }

@@ -56,4 +56,12 @@ class BoardRepository extends BaseRepository
 
         return $user->boards()->create($input);
     }
+
+    public function all($search = [], $skip = null, $limit = null, $columns = ['*'])
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        return $user->boards;
+    }
 }

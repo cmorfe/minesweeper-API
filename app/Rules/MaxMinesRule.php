@@ -7,22 +7,22 @@ use Illuminate\Contracts\Validation\Rule;
 class MaxMinesRule implements Rule
 {
     /**
-     * @var int
+     * @var
      */
     private $width;
 
     /**
-     * @var int
+     * @var
      */
     private $height;
 
     /**
      * Create a new rule instance.
      *
-     * @param  int  $width
-     * @param  int  $height
+     * @param  $width
+     * @param  $height
      */
-    public function __construct(int $width, int $height)
+    public function __construct($width, $height)
     {
         $this->width = $width;
 
