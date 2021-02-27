@@ -16,14 +16,11 @@ class SquareResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'board_id' => $this->board_id,
             'x' => $this->x,
             'y' => $this->y,
             'mark' => $this->mark,
             'mined' => $this->mined,
-            'open' => $this->open,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'open' => $this->open
         ];
     }
 }

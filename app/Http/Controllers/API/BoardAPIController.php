@@ -33,7 +33,7 @@ class BoardAPIController extends AppBaseController
 
     /**
      * @param  Request  $request
-     * @return Response
+     * @return JsonResponse
      *
      * @SWG\Get(
      *      path="/boards",
@@ -63,19 +63,15 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function index(Request $request)
+    public function index(): JsonResponse
     {
-        $boards = $this->boardRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+        $boards = $this->boardRepository->all();
 
         return $this->sendResponse(BoardResource::collection($boards), 'Boards retrieved successfully');
     }
 
     /**
-     * @param  CreateBoardAPIRequest  $request
+     * @param  Request  $request
      * @return JsonResponse
      *
      * @SWG\Post(
@@ -123,12 +119,12 @@ class BoardAPIController extends AppBaseController
         }
         $board = $this->boardRepository->create($input);
 
-        return $this->sendResponse(new BoardResource($board), 'Board saved successfully');
+        return $this->sendResponse(new BoardResource($board->load('squares')), 'Board saved successfully');
     }
 
     /**
      * @param  int  $id
-     * @return Response
+     * @return JsonResponse
      *
      * @SWG\Get(
      *      path="/boards/{id}",
@@ -164,7 +160,7 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         /** @var Board $board */
         $board = $this->boardRepository->find($id);
@@ -173,7 +169,7 @@ class BoardAPIController extends AppBaseController
             return $this->sendError('Board not found');
         }
 
-        return $this->sendResponse(new BoardResource($board), 'Board retrieved successfully');
+        return $this->sendResponse(new BoardResource($board->load('squares')), 'Board retrieved successfully');
     }
 
     /**
