@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Http\Resources\SquareResource;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use RuntimeException;
 
 /**
  * @SWG\Definition(
@@ -173,4 +175,26 @@ class Board extends Model
         return $this->hasMany(Square::class);
     }
 
+    public function getGameSquaresAttribute(): Collection
+    {
+        $gameSquares = new Collection;
+
+        $squares = $this->squares()->orderBy('x')->orderBy('y')->get();
+
+        if ($squares->count() != $this->width * $this->height) {
+            throw new RuntimeException("Size mismatch");
+        }
+
+        for ($width = 0; $width < $this->width; $width++) {
+            $squareRow = new Collection();
+
+            for ($height = 0; $height < $this->height; $height++) {
+                $squareRow->add(new SquareResource($squares->pop()));
+            }
+
+            $gameSquares->add($squareRow);
+        }
+
+        return $gameSquares;
+    }
 }

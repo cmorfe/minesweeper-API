@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AppBaseController;
-use App\Http\Requests\API\UpdateBoardAPIRequest;
 use App\Http\Resources\BoardResource;
 use App\Models\Board;
 use App\Repositories\BoardRepository;
@@ -115,7 +114,7 @@ class BoardAPIController extends AppBaseController
         }
         $board = $this->boardRepository->create($input);
 
-        return $this->sendResponse(new BoardResource($board->load('squares')), 'Board saved successfully');
+        return $this->sendResponse(new BoardResource($board->append('game_squares')), 'Board saved successfully');
     }
 
     /**
@@ -165,12 +164,12 @@ class BoardAPIController extends AppBaseController
             return $this->sendError('Board not found');
         }
 
-        return $this->sendResponse(new BoardResource($board->load('squares')), 'Board retrieved successfully');
+        return $this->sendResponse(new BoardResource($board->append('game_squares')), 'Board retrieved successfully');
     }
 
     /**
      * @param  int  $id
-     * @param  UpdateBoardAPIRequest  $request
+     * @param  Request  $request
      * @return JsonResponse
      *
      * @SWG\Put(
@@ -214,7 +213,7 @@ class BoardAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateBoardAPIRequest $request): JsonResponse
+    public function update($id, Request $request): JsonResponse
     {
         $input = $request->all();
 
@@ -240,10 +239,13 @@ class BoardAPIController extends AppBaseController
     {
         return Validator::make($input, Board::$rules)
             ->after(function ($validator) use ($input) {
-                $maxMines = $input['width'] * $input['height'];
+                if (is_int($input['width']) && is_int($input['height'])) {
+                    $maxMines = $input['width'] * $input['height'];
 
-                if ($input['mines'] > $maxMines) {
-                    $validator->errors()->add('mines', "The number of mines must be less than or equal {$maxMines}.");
+                    if ($input['mines'] > $maxMines) {
+                        $validator->errors()->add('mines',
+                            "The number of mines must be less than or equal {$maxMines}.");
+                    }
                 }
             })->validate();
     }

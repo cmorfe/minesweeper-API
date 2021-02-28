@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BoardResource extends JsonResource
@@ -9,10 +10,10 @@ class BoardResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
@@ -21,7 +22,7 @@ class BoardResource extends JsonResource
             'mines' => $this->mines,
             'time' => $this->time,
             'game_state' => $this->game_state,
-            'squares' => SquareResource::collection($this->whenLoaded('squares')),
+            'game_squares' => $this->when($this->hasAppended('game_squares'), $this->game_squares),
             'created_at' => $this->created_at,
         ];
     }
