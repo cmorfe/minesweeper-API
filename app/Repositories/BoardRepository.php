@@ -63,4 +63,12 @@ class BoardRepository extends BaseRepository
 
         return $user->boards;
     }
+
+    public function find($id, $columns = ['*'])
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        return $user->boards()->find($id);
+    }
 }

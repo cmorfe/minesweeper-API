@@ -133,11 +133,9 @@ class Board extends Model
     {
         $squares = new Collection;
 
-        $mined = false;
-
         for ($x = 0; $x < $this->width; $x++) {
             for ($y = 0; $y < $this->height; $y++) {
-                $squares->add(compact('x', 'y', 'mined'));
+                $squares->add(compact('x', 'y'));
             }
         }
 

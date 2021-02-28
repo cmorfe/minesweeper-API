@@ -105,13 +105,15 @@ class BoardAPIController extends AppBaseController
      */
     public function store(Request $request): JsonResponse
     {
-        $input = $request->all();
+        $input = $request->only('width', 'height', 'mines');
 
         try {
             $this->validateCreate($input);
         } catch (ValidationException $e) {
             return $this->sendError($e->getMessage(), $e->status, $e->errors());
         }
+
+        /** @var Board $board */
         $board = $this->boardRepository->create($input);
 
         return $this->sendResponse(new BoardResource($board->append('game_squares')), 'Board saved successfully');
@@ -215,16 +217,21 @@ class BoardAPIController extends AppBaseController
      */
     public function update($id, Request $request): JsonResponse
     {
-        $input = $request->all();
+        $input = $request->only('time');
 
-        /** @var Board $board */
+        try {
+            $this->validateUpdate($input);
+        } catch (ValidationException $e) {
+            return $this->sendError($e->getMessage(), $e->status, $e->errors());
+        }
+
         $board = $this->boardRepository->find($id);
 
         if (empty($board)) {
             return $this->sendError('Board not found');
         }
 
-        $board = $this->boardRepository->update($input, $id);
+        $board->update($input);
 
         return $this->sendResponse(new BoardResource($board), 'Board updated successfully');
     }
@@ -248,5 +255,18 @@ class BoardAPIController extends AppBaseController
                     }
                 }
             })->validate();
+    }
+
+    /**
+     * @param  array  $input
+     * @return array
+     * @throws ValidationException
+     *
+     */
+    private function validateUpdate(array $input): array
+    {
+        return Validator::make($input, [
+            'time' => 'required|integer'
+        ])->validate();
     }
 }
