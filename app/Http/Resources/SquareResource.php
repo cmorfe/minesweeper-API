@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Board;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,7 @@ class SquareResource extends JsonResource
             'x' => $this->x,
             'y' => $this->y,
             'mark' => $this->mark,
-            'mined' => $this->mined,
+            'mined' => $this->when($this->board->game_state != Board::GAME_STATE_ON, $this->mined),
             'open' => $this->open
         ];
     }
