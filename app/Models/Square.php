@@ -144,4 +144,13 @@ class Square extends Model
     {
         return $this->adjacent_mines_count == 0 || $this->is_game_lost;
     }
+
+    public function toggleMark()
+    {
+        $this->mark = match ($this->mark) {
+            self::MARK_NONE => self::MARK_FLAG,
+            self::MARK_FLAG => self::MARK_QUESTION,
+            self::MARK_QUESTION => self::MARK_NONE,
+        };
+    }
 }
