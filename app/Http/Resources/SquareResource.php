@@ -21,8 +21,10 @@ class SquareResource extends JsonResource
             'x' => $this->x,
             'y' => $this->y,
             'mark' => $this->mark,
-            'mined' => $this->when($this->board->game_state != Board::GAME_STATE_ON, $this->mined),
-            'open' => $this->open
+            'mined' => $this->when($this->is_game_lost, $this->mined),
+            'open' => $this->open,
+            'should_reload' => $this->when($this->open, $this->should_reload),
+            'adjacent_mines_count' => $this->when($this->open, $this->adjacent_mines_count)
         ];
     }
 }

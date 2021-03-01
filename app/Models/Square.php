@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -69,13 +69,14 @@ class Square extends Model
 
     use HasFactory;
 
-    public $table = 'squares';
-    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    const MARK_NONE = 'NONE';
+    const MARK_FLAG = 'FLAG';
+    const MARK_QUESTION = 'QUESTION';
 
-
+    public $table = 'squares';
 
     public $fillable = [
         'x',
@@ -101,26 +102,46 @@ class Square extends Model
     ];
 
     /**
-     * Validation rules
-     *
-     * @var array
-     */
-    public static $rules = [
-        'board_id' => 'required',
-        'x' => 'required|integer',
-        'y' => 'required|integer',
-        'mark' => 'required|string',
-        'mined' => 'required|boolean',
-        'open' => 'required|boolean',
-        'created_at' => 'nullable',
-        'updated_at' => 'nullable'
-    ];
-
-    /**
      * @return BelongsTo
      **/
     public function board(): BelongsTo
     {
         return $this->belongsTo(Board::class);
+    }
+
+    /**
+     * @return Builder
+     */
+    public function adjacentSquaresQuery(): Builder
+    {
+        return Square::where('board_id', '=', $this->board_id)
+            ->whereBetween('x', [$this->x - 1, $this->y + 1])
+            ->whereBetween('y', [$this->y - 1, $this->y + 1]);
+    }
+
+    /**
+     * @return int
+     */
+    public function getAdjacentMinesCountAttribute(): int
+    {
+        return $this->adjacentSquaresQuery()
+            ->where('mined', '=', true)
+            ->count();
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsGameLostAttribute(): bool
+    {
+        return $this->board->game_state == Board::GAME_STATE_LOST;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShouldReloadAttribute(): bool
+    {
+        return $this->adjacent_mines_count == 0 || $this->is_game_lost;
     }
 }
