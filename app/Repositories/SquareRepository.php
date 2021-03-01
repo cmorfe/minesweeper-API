@@ -22,7 +22,7 @@ class SquareRepository
         /** @var Board $board */
         $board = $square->board;
 
-        if ($square->open || $square->mark == Square::MARK_FLAG || $board->game_sate != Board::GAME_STATE_ON) {
+        if ($square->open || $square->mark == Square::MARK_FLAG || $board->game_state != Board::GAME_STATE_ON) {
             return $square;
         }
 
@@ -44,7 +44,7 @@ class SquareRepository
             });
         }
 
-        if ($board->not_mined_and_closed_squares_count = 0) {
+        if ($board->not_mined_and_closed_squares_count == 0) {
             $board->update(['game_state' => Board::GAME_STATE_WON]);
         }
 
@@ -61,11 +61,23 @@ class SquareRepository
             return $square;
         }
 
-        $mark = match ($square->mark) {
-            Square::MARK_NONE => Square::MARK_FLAG,
-            Square::MARK_FLAG => Square::MARK_QUESTION,
-            Square::MARK_QUESTION => Square::MARK_NONE,
-        };
+//        $mark = match ($square->mark) {
+//            Square::MARK_NONE => Square::MARK_FLAG,
+//            Square::MARK_FLAG => Square::MARK_QUESTION,
+//            Square::MARK_QUESTION => Square::MARK_NONE,
+//        };
+
+        switch ($square->mark) {
+            case Square::MARK_NONE:
+                $mark = Square::MARK_FLAG;
+                break;
+            case Square::MARK_FLAG:
+                $mark = Square::MARK_QUESTION;
+                break;
+            case Square::MARK_QUESTION:
+            default:
+                $mark = Square::MARK_NONE;
+        }
 
         $square->update(['mark' => $mark]);
 

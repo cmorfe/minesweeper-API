@@ -149,17 +149,32 @@ class Square extends Model
     /**
      * @return bool
      */
-    public function getShouldReloadAttribute(): bool
+    public function getIsGameOnAttribute(): bool
     {
-        return $this->adjacent_mines_count == 0 || $this->is_game_lost;
+        return $this->board->game_state == Board::GAME_STATE_ON;
     }
 
+    /**
+     * @return bool
+     */
+    public function getShouldReloadAttribute(): bool
+    {
+        return $this->adjacent_mines_count == 0 || !$this->is_game_on;
+    }
+
+    /**
+     * @param  Builder  $query
+     * @return Builder
+     */
     public static function scopeNotMined(Builder $query): Builder
     {
         return $query->where('mined', '=', false);
-
     }
 
+    /**
+     * @param  Builder  $query
+     * @return Builder
+     */
     public static function scopeClosed(Builder $query): Builder
     {
         return $query->where('open', '=', false);

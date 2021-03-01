@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Utils\Encoder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Response;
 
@@ -18,6 +20,64 @@ use Response;
  */
 class AppBaseController extends Controller
 {
+    protected $ids = [
+        'id' => 'id',
+        'board_id' => 'board_id',
+        'square_id' => 'square_id'
+    ];
+
+    /**
+     * @param  array  $attributes
+     * @return array
+     */
+    public function encodeIds(array $attributes): array
+    {
+        foreach ($attributes as $key => $value) {
+            if (is_int($value) && Arr::exists($this->ids, $key)) {
+                $attributes[$key] = $this->encode($value);
+            } elseif (is_array($value)) {
+                $attributes[$key] = $this->encodeIds($value);
+            } elseif (is_a($value, Model::class)) {
+                $attributes[$key] = $this->encodeIds($value->toArray());
+            }
+        }
+
+        return $attributes;
+    }
+
+    public function encode(int $id): string
+    {
+        $encoder = new Encoder();
+
+        return $encoder->encodeHex($id);
+    }
+
+    /**
+     * @param  array  $attributes
+     * @return array
+     */
+    public function decodeIds(array $attributes): array
+    {
+        foreach ($attributes as $key => $value) {
+            if (is_string($value) && Arr::exists($this->ids, $key)) {
+                $attributes[$key] = $this->decode($value);
+            } elseif (is_array($value)) {
+                $attributes[$key] = $this->decodeIds($value);
+            } elseif (is_a($value, Model::class)) {
+                $attributes[$key] = $this->decodeIds($value->toArray());
+            }
+        }
+
+        return $attributes;
+    }
+
+    public function decode(string $id): int
+    {
+        $encoder = new Encoder();
+
+        return $encoder->decodeHex($id);
+    }
+
     /**
      * @param $result
      * @param $message
