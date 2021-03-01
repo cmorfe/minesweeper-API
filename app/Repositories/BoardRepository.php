@@ -61,7 +61,7 @@ class BoardRepository extends BaseRepository
         /** @var User $user */
         $user = auth()->user();
 
-        return $user->boards()->withGameStateOn()->get();
+        return $user->boards()->gameIsOn()->get();
     }
 
     public function find($id, $columns = ['*'])

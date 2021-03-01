@@ -6,6 +6,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\BoardResource;
 use App\Models\Board;
 use App\Repositories\BoardRepository;
+use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -245,16 +246,8 @@ class BoardAPIController extends AppBaseController
     private function validateCreate(array $input): array
     {
         return Validator::make($input, Board::$rules)
-            ->after(function ($validator) use ($input) {
-                if (is_int($input['width']) && is_int($input['height'])) {
-                    $maxMines = $input['width'] * $input['height'];
-
-                    if ($input['mines'] > $maxMines) {
-                        $validator->errors()->add('mines',
-                            "The number of mines must be less than or equal {$maxMines}.");
-                    }
-                }
-            })->validate();
+            ->after($this->addMaxMinesRule($input))
+            ->validate();
     }
 
     /**
@@ -268,5 +261,23 @@ class BoardAPIController extends AppBaseController
         return Validator::make($input, [
             'time' => 'required|integer'
         ])->validate();
+    }
+
+    /**
+     * @param  array  $input
+     * @return Closure
+     */
+    private function addMaxMinesRule(array $input): Closure
+    {
+        return function ($validator) use ($input) {
+            if (is_int($input['width']) && is_int($input['height'])) {
+                $maxMines = $input['width'] * $input['height'];
+
+                if ($input['mines'] > $maxMines) {
+                    $validator->errors()->add('mines',
+                        "The number of mines must be less than or equal {$maxMines}.");
+                }
+            }
+        };
     }
 }

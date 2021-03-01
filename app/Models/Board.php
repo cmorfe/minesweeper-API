@@ -124,8 +124,6 @@ class Board extends Model
 
         self::created(function (Board $board) {
             $board->createSquares();
-
-            $board->refresh();
         });
     }
 
@@ -153,6 +151,8 @@ class Board extends Model
         }
 
         $this->squares()->createMany($squares);
+
+        $this->refresh();
     }
 
     /**
@@ -163,7 +163,7 @@ class Board extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function scopeWithGameStateOn(Builder $query): Builder
+    public static function scopeGameIsOn(Builder $query): Builder
     {
         return $query->where('game_state', '=', self::GAME_STATE_ON);
     }
@@ -184,7 +184,7 @@ class Board extends Model
         }
 
         for ($width = 0; $width < $this->width; $width++) {
-            $squareRow = new Collection();
+            $squareRow = new Collection;
 
             for ($height = 0; $height < $this->height; $height++) {
                 $squareRow->add(new SquareResource($squares->pop()));
