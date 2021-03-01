@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -130,6 +131,14 @@ class Square extends Model
     }
 
     /**
+     * @return Collection
+     */
+    public function getAdjacentSquaresAttribute(): Collection
+    {
+        return $this->adjacentSquaresQuery()->get();
+    }
+
+    /**
      * @return bool
      */
     public function getIsGameLostAttribute(): bool
@@ -145,18 +154,14 @@ class Square extends Model
         return $this->adjacent_mines_count == 0 || $this->is_game_lost;
     }
 
-    public function toggleMark()
+    public static function scopeNotMined(Builder $query): Builder
     {
-        switch ($this->mark) {
-            case self::MARK_NONE:
-                $this->mark = self::MARK_FLAG;
-                break;
-            case self::MARK_FLAG:
-                $this->mark = self::MARK_QUESTION;
-                break;
-            case self::MARK_QUESTION:
-                $this->mark = self::MARK_NONE;
-                break;
-        }
+        return $query->where('mined', '=', false);
+
+    }
+
+    public static function scopeClosed(Builder $query): Builder
+    {
+        return $query->where('open', '=', false);
     }
 }

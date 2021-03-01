@@ -74,11 +74,14 @@ class SquareAPIController extends AppBaseController
     {
         $input = $request->route()->parameters();
 
-        $square = $this->squareRepository->open($input['board'], $input['square']);
+        /** @var Square $square */
+        $square = $this->squareRepository->findByBoardAndId($input['board'], $input['square']);
 
         if (empty($square)) {
             return $this->sendError('Square not found');
         }
+
+        $square = $this->squareRepository->open($square);
 
         return $this->sendResponse(new SquareResource($square), 'Square open successfully');
     }
@@ -132,11 +135,14 @@ class SquareAPIController extends AppBaseController
     {
         $input = $request->route()->parameters();
 
-        $square = $this->squareRepository->mark($input['board'], $input['square']);
+        /** @var Square $square */
+        $square = $this->squareRepository->findByBoardAndId($input['board'], $input['square']);
 
         if (empty($square)) {
             return $this->sendError('Square not found');
         }
+
+        $square = $this->squareRepository->mark($square);
 
         return $this->sendResponse(new SquareResource($square), 'Square marked successfully');
     }

@@ -195,4 +195,12 @@ class Board extends Model
 
         return $gameSquares;
     }
+
+    /**
+     * @return int
+     */
+    public function getNotMinedAndClosedSquaresCountAttribute(): int
+    {
+        return $this->squares()->notMined()->closed()->count();
+    }
 }
