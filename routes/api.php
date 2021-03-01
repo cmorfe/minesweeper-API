@@ -14,18 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 /**
- * Authentication
+ * Auth
  */
 Route::post('register', [App\Http\Controllers\AuthController::class, 'register']);
 Route::post('login', [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout']);
 
+/**
+ * Boards
+ */
+Route::resource('boards', App\Http\Controllers\API\BoardAPIController::class)
+    ->only('index', 'store', 'show', 'update');
 
-Route::resource('boards', App\Http\Controllers\API\BoardAPIController::class);
-
-Route::resource('squares', App\Http\Controllers\API\SquareAPIController::class);
+/**
+ * Squares
+ */
+Route::prefix('boards/{board}/squares/{square}')->group(function () {
+    Route::post('open', [App\Http\Controllers\API\SquareAPIController::class => 'open']);
+    Route::post('mark', [App\Http\Controllers\API\SquareAPIController::class => 'mark']);
+});

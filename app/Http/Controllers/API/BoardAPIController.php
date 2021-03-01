@@ -84,8 +84,8 @@ class BoardAPIController extends AppBaseController
      *          @SWG\Schema(ref="#/definitions/Board")
      *      ),
      *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
+     *          response=201,
+     *          description="created resource",
      *          @SWG\Schema(
      *              type="object",
      *              @SWG\Property(
@@ -117,7 +117,7 @@ class BoardAPIController extends AppBaseController
         /** @var Board $board */
         $board = $this->boardRepository->create($input);
 
-        return $this->sendResponse(new BoardResource($board->append('game_squares')), 'Board saved successfully');
+        return $this->sendResponse(new BoardResource($board->append('game_squares')), 'Board saved successfully', 201);
     }
 
     /**
@@ -125,13 +125,13 @@ class BoardAPIController extends AppBaseController
      * @return JsonResponse
      *
      * @SWG\Get(
-     *      path="/boards/{id}",
+     *      path="/boards/{board}",
      *      summary="Display the specified Board",
      *      tags={"Board"},
      *      description="Get Board",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="id",
+     *          name="board",
      *          description="id of Board",
      *          type="integer",
      *          required=true,
@@ -176,13 +176,13 @@ class BoardAPIController extends AppBaseController
      * @return JsonResponse
      *
      * @SWG\Put(
-     *      path="/boards/{id}",
+     *      path="/boards/{board}",
      *      summary="Update the specified Board in storage",
      *      tags={"Board"},
      *      description="Update Board",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="id",
+     *          name="board",
      *          description="id of Board",
      *          type="integer",
      *          required=true,
