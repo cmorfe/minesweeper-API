@@ -252,19 +252,6 @@ class BoardAPIController extends AppBaseController
 
     /**
      * @param  array  $input
-     * @return array
-     * @throws ValidationException
-     *
-     */
-    private function validateUpdate(array $input): array
-    {
-        return Validator::make($input, [
-            'time' => 'required|integer'
-        ])->validate();
-    }
-
-    /**
-     * @param  array  $input
      * @return Closure
      */
     private function addMaxMinesRule(array $input): Closure
@@ -279,5 +266,18 @@ class BoardAPIController extends AppBaseController
                 }
             }
         };
+    }
+
+    /**
+     * @param  array  $input
+     * @return array
+     * @throws ValidationException
+     *
+     */
+    private function validateUpdate(array $input): array
+    {
+        return Validator::make($input, [
+            'time' => 'required|integer'
+        ])->validate();
     }
 }

@@ -147,10 +147,16 @@ class Square extends Model
 
     public function toggleMark()
     {
-        $this->mark = match ($this->mark) {
-            self::MARK_NONE => self::MARK_FLAG,
-            self::MARK_FLAG => self::MARK_QUESTION,
-            self::MARK_QUESTION => self::MARK_NONE,
-        };
+        switch ($this->mark) {
+            case self::MARK_NONE:
+                $this->mark = self::MARK_FLAG;
+                break;
+            case self::MARK_FLAG:
+                $this->mark = self::MARK_QUESTION;
+                break;
+            case self::MARK_QUESTION:
+                $this->mark = self::MARK_NONE;
+                break;
+        }
     }
 }
