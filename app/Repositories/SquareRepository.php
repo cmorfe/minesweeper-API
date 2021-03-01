@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Square;
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class SquareRepository
@@ -11,35 +12,29 @@ use App\Repositories\BaseRepository;
  * @version February 24, 2021, 10:27 pm -03
 */
 
-class SquareRepository extends BaseRepository
+class SquareRepository
 {
     /**
-     * @var array
+     * @param $board
+     * @param $square
+     * @return ?Model
      */
-    protected $fieldSearchable = [
-        'board_id',
-        'x',
-        'y',
-        'mark',
-        'mined',
-        'open'
-    ];
-
-    /**
-     * Return searchable fields
-     *
-     * @return array
-     */
-    public function getFieldsSearchable()
+    public function open($board, $square): ?Model
     {
-        return $this->fieldSearchable;
+        return Square::where('board_id', '=', $board)
+        ->where('id', '=', $square)
+        ->first();
     }
 
     /**
-     * Configure the Model
-     **/
-    public function model()
+     * @param $board
+     * @param $square
+     * @return ?Model
+     */
+    public function mark($board, $square): ?Model
     {
-        return Square::class;
+        return Square::where('board_id', '=', $board)
+        ->where('id', '=', $square)
+        ->first();
     }
 }

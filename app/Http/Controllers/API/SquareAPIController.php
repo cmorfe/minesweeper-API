@@ -72,8 +72,9 @@ class SquareAPIController extends AppBaseController
      */
     public function open(Request $request): JsonResponse
     {
-        /** @var Square $square */
-        $square = $this->squareRepository->open($request);
+        $input = $request->route()->parameters();
+
+        $square = $this->squareRepository->open($input['board'], $input['square']);
 
         if (empty($square)) {
             return $this->sendError('Square not found');
@@ -129,8 +130,9 @@ class SquareAPIController extends AppBaseController
      */
     public function mark(Request $request): JsonResponse
     {
-        /** @var Square $square */
-        $square = $this->squareRepository->mark($request->id);
+        $input = $request->route()->parameters();
+
+        $square = $this->squareRepository->mark($input['board'], $input['square']);
 
         if (empty($square)) {
             return $this->sendError('Square not found');

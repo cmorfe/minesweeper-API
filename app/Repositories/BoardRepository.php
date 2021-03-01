@@ -2,48 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Models\Board;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class BoardRepository
  * @package App\Repositories
  * @version February 23, 2021, 3:27 am -03
-*/
-
-class BoardRepository extends BaseRepository
+ */
+class BoardRepository
 {
-    /**
-     * @var array
-     */
-    protected $fieldSearchable = [
-        'user_id',
-        'width',
-        'height',
-        'mines',
-        'time',
-        'game_state'
-    ];
-
-    /**
-     * Return searchable fields
-     *
-     * @return array
-     */
-    public function getFieldsSearchable(): array
-    {
-        return $this->fieldSearchable;
-    }
-
-    /**
-     * Configure the Model
-     **/
-    public function model(): string
-    {
-        return Board::class;
-    }
-
     /**
      * @param  array  $input
      * @return Model
@@ -56,7 +25,10 @@ class BoardRepository extends BaseRepository
         return $user->boards()->create($input);
     }
 
-    public function all($search = [], $skip = null, $limit = null, $columns = ['*'])
+    /**
+     * @return Collection
+     */
+    public function all(): Collection
     {
         /** @var User $user */
         $user = auth()->user();
@@ -64,7 +36,11 @@ class BoardRepository extends BaseRepository
         return $user->boards()->gameIsOn()->get();
     }
 
-    public function find($id, $columns = ['*'])
+    /**
+     * @param  int  $id
+     * @return ?Model
+     */
+    public function find($id): ?Model
     {
         /** @var User $user */
         $user = auth()->user();

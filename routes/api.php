@@ -31,6 +31,6 @@ Route::resource('boards', App\Http\Controllers\API\BoardAPIController::class)
  * Squares
  */
 Route::prefix('boards/{board}/squares/{square}')->group(function () {
-    Route::post('open', [App\Http\Controllers\API\SquareAPIController::class => 'open']);
-    Route::post('mark', [App\Http\Controllers\API\SquareAPIController::class => 'mark']);
+    Route::post('open', [App\Http\Controllers\API\SquareAPIController::class, 'open']);
+    Route::post('mark', [App\Http\Controllers\API\SquareAPIController::class, 'mark']);
 });
