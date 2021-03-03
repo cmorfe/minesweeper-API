@@ -61,23 +61,11 @@ class SquareRepository
             return $square;
         }
 
-//        $mark = match ($square->mark) {
-//            Square::MARK_NONE => Square::MARK_FLAG,
-//            Square::MARK_FLAG => Square::MARK_QUESTION,
-//            Square::MARK_QUESTION => Square::MARK_NONE,
-//        };
-
-        switch ($square->mark) {
-            case Square::MARK_NONE:
-                $mark = Square::MARK_FLAG;
-                break;
-            case Square::MARK_FLAG:
-                $mark = Square::MARK_QUESTION;
-                break;
-            case Square::MARK_QUESTION:
-            default:
-                $mark = Square::MARK_NONE;
-        }
+        $mark = match ($square->mark) {
+            Square::MARK_NONE => Square::MARK_FLAG,
+            Square::MARK_FLAG => Square::MARK_QUESTION,
+            Square::MARK_QUESTION => Square::MARK_NONE,
+        };
 
         $square->update(['mark' => $mark]);
 
