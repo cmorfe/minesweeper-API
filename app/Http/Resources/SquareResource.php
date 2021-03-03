@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Board;
+use App\Utils\Encoder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,8 +17,10 @@ class SquareResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $encoder = new Encoder();
+
         return [
-            'id' => $this->id,
+            'id' => $encoder->encode($this->id),
             'x' => $this->x,
             'y' => $this->y,
             'mark' => $this->mark,

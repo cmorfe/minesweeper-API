@@ -165,7 +165,7 @@ class Board extends Model
 
     public static function scopeGameIsOn(Builder $query): Builder
     {
-        return $query->where('game_state', '=', self::GAME_STATE_ON);
+        return $query->where('game_state', '=', self::GAME_STATE_ON)->latest();
     }
 
     public function squares(): HasMany
@@ -177,7 +177,7 @@ class Board extends Model
     {
         $gameSquares = new Collection;
 
-        $squares = $this->squares()->orderBy('x')->orderBy('y')->get();
+        $squares = $this->squares()->orderBy('x', 'desc')->orderBy('y', 'desc')->get();
 
         if ($squares->count() != $this->width * $this->height) {
             throw new RuntimeException("Size mismatch");

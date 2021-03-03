@@ -161,7 +161,9 @@ class BoardAPIController extends AppBaseController
     public function show($id): JsonResponse
     {
         /** @var Board $board */
-        $board = $this->boardRepository->find($id);
+        $board = $this->boardRepository->find(
+            $this->decode($id)
+        );
 
         if (empty($board)) {
             return $this->sendError('Board not found');
@@ -226,7 +228,9 @@ class BoardAPIController extends AppBaseController
             return $this->sendError($e->getMessage(), $e->status, $e->errors());
         }
 
-        $board = $this->boardRepository->find($id);
+        $board = $this->boardRepository->find(
+            $this->decode($id)
+        );
 
         if (empty($board)) {
             return $this->sendError('Board not found');

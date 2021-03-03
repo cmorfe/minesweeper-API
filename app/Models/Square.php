@@ -116,7 +116,7 @@ class Square extends Model
     public function adjacentSquaresQuery(): Builder
     {
         return Square::where('board_id', '=', $this->board_id)
-            ->whereBetween('x', [$this->x - 1, $this->y + 1])
+            ->whereBetween('x', [$this->x - 1, $this->x + 1])
             ->whereBetween('y', [$this->y - 1, $this->y + 1]);
     }
 

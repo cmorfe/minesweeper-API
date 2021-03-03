@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Utils\Encoder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,8 +16,10 @@ class BoardResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $encoder = new Encoder();
+
         return [
-            'id' => $this->id,
+            'id' => $encoder->encode($this->id),
             'width' => $this->width,
             'height' => $this->height,
             'mines' => $this->mines,

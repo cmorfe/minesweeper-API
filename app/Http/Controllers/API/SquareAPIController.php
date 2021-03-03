@@ -72,7 +72,9 @@ class SquareAPIController extends AppBaseController
      */
     public function open(Request $request): JsonResponse
     {
-        $input = $request->route()->parameters();
+        $input = $this->decodeIds(
+            $request->route()->parameters()
+        );
 
         /** @var Square $square */
         $square = $this->squareRepository->findByBoardAndId($input['board'], $input['square']);
@@ -133,7 +135,9 @@ class SquareAPIController extends AppBaseController
      */
     public function mark(Request $request): JsonResponse
     {
-        $input = $request->route()->parameters();
+        $input = $this->decodeIds(
+            $request->route()->parameters()
+        );
 
         /** @var Square $square */
         $square = $this->squareRepository->findByBoardAndId($input['board'], $input['square']);

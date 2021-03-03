@@ -6,6 +6,7 @@ use App\Utils\Encoder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Response;
+use Arr;
 
 /**
  * @SWG\Swagger(
@@ -21,9 +22,8 @@ use Response;
 class AppBaseController extends Controller
 {
     protected $ids = [
-        'id' => 'id',
-        'board_id' => 'board_id',
-        'square_id' => 'square_id'
+        'board' => 'board',
+        'square' => 'square'
     ];
 
     /**
