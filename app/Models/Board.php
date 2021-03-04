@@ -177,17 +177,17 @@ class Board extends Model
     {
         $gameSquares = new Collection;
 
-        $squares = $this->squares()->orderBy('x', 'desc')->orderBy('y', 'desc')->get();
+        $squares = $this->squares()->orderBy('y')->orderBy('x')->get();
 
         if ($squares->count() != $this->width * $this->height) {
             throw new RuntimeException("Size mismatch");
         }
 
-        for ($width = 0; $width < $this->width; $width++) {
+        for ($height = 0; $height < $this->height; $height++) {
             $squareRow = new Collection;
 
-            for ($height = 0; $height < $this->height; $height++) {
-                $squareRow->add(new SquareResource($squares->pop()));
+            for ($width = 0; $width < $this->width; $width++) {
+                $squareRow->add(new SquareResource($squares->shift()));
             }
 
             $gameSquares->add($squareRow);
