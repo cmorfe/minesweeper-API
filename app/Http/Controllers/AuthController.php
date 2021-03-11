@@ -34,7 +34,7 @@ class AuthController extends AppBaseController
         try {
             $this->validateRegister($userData);
         } catch (ValidationException $e) {
-            return $this->sendError($e->getMessage(), 422, $e->errors());
+            return $this->sendError($e->getMessage(), $e->status, $e->errors());
         }
 
         $user = $this->registerUser($userData);
@@ -53,7 +53,7 @@ class AuthController extends AppBaseController
     {
         return Validator::make($input, [
             'username' => 'required|max:55|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required|min:6|confirmed'
         ])->validate();
     }
 
@@ -79,7 +79,7 @@ class AuthController extends AppBaseController
         try {
             $this->validateLogin($credentials);
         } catch (ValidationException $e) {
-            return $this->sendError($e->getMessage(), 422, $e->errors());
+            return $this->sendError($e->getMessage(), $e->status, $e->errors());
         }
 
         if (!auth()->attempt($credentials)) {

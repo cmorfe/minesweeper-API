@@ -1,0 +1,377 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Laravel Generator APIs",
+        "version": "1.0.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/boards": {
+            "get": {
+                "tags": [
+                    "Board"
+                ],
+                "summary": "Get a listing of the Boards.",
+                "description": "Get all Boards",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Board"
+                                    }
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Board"
+                ],
+                "summary": "Store a newly created Board in storage",
+                "description": "Store Board",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Board that should be stored",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/Board"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "created resource",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Board"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/boards/{board}": {
+            "get": {
+                "tags": [
+                    "Board"
+                ],
+                "summary": "Display the specified Board",
+                "description": "Get Board",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "board",
+                        "in": "path",
+                        "description": "id of Board",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Board"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Board"
+                ],
+                "summary": "Update the specified Board in storage",
+                "description": "Update Board",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "board",
+                        "in": "path",
+                        "description": "id of Board",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Board that should be updated",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/Board"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Board"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/squares/{id}": {
+            "post": {
+                "tags": [
+                    "Square"
+                ],
+                "summary": "Open the specified Square in storage",
+                "description": "Open Square",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "board",
+                        "in": "path",
+                        "description": "id of Board",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "square",
+                        "in": "path",
+                        "description": "id of Square",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "accepted operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Square"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/boards/{board}/squares/{square}/mark": {
+            "post": {
+                "tags": [
+                    "Square"
+                ],
+                "summary": "Toggle the mark of the specified Square in storage",
+                "description": "Toggle mark of Square",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "board",
+                        "in": "path",
+                        "description": "id of Board",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "square",
+                        "in": "path",
+                        "description": "id of Square",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "accepted operation",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/Square"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Board": {
+            "required": [
+                "user_id",
+                "width",
+                "height",
+                "mines",
+                "time",
+                "game_state"
+            ],
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "user_id": {
+                    "description": "user_id",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "width": {
+                    "description": "width",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "height": {
+                    "description": "height",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "mines": {
+                    "description": "mines",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "time": {
+                    "description": "time",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "game_state": {
+                    "description": "game_state",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "created_at",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "description": "updated_at",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "Square": {
+            "required": [
+                "board_id",
+                "x",
+                "y",
+                "mark",
+                "mined",
+                "open"
+            ],
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "board_id": {
+                    "description": "board_id",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "x": {
+                    "description": "x",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "y": {
+                    "description": "y",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "mark": {
+                    "description": "mark",
+                    "type": "string"
+                },
+                "mined": {
+                    "description": "mined",
+                    "type": "boolean"
+                },
+                "open": {
+                    "description": "open",
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "description": "created_at",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "description": "updated_at",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        }
+    }
+}

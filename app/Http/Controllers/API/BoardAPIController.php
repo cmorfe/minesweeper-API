@@ -261,10 +261,10 @@ class BoardAPIController extends AppBaseController
     private function addMaxMinesRule(array $input): Closure
     {
         return function ($validator) use ($input) {
-            if (is_int($input['width']) && is_int($input['height'])) {
+            if (isset($input['width']) && is_numeric($input['width']) && isset($input['height']) && is_numeric($input['height'])) {
                 $maxMines = $input['width'] * $input['height'];
 
-                if ($input['mines'] > $maxMines) {
+                if (isset($input['mines']) && is_numeric($input['mines']) && $input['mines'] > $maxMines) {
                     $validator->errors()->add('mines',
                         "The number of mines must be less than or equal {$maxMines}.");
                 }

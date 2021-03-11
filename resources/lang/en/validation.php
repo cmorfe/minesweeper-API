@@ -147,6 +147,9 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'height' => 'rows',
+        'width' => 'columns'
+    ],
 
 ];
